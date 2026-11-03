@@ -59,13 +59,13 @@ describe('export progress and sizing helpers', () => {
 
 describe('createExportFilename', () => {
   it('uses a safe track-derived MP4 name', () => {
-    expect(createExportFilename('My Song.mp3')).toBe('My Song-typographic-spectrum.mp4')
-    expect(createExportFilename('a:b/c?.wav')).toBe('a-b-c--typographic-spectrum.mp4')
+    expect(createExportFilename('My Song.mp3')).toBe('My Song-typo.mp4')
+    expect(createExportFilename('a:b/c?.wav')).toBe('a-b-c--typo.mp4')
   })
 
   it('provides a fallback for missing or unusable names', () => {
-    expect(createExportFilename(null)).toBe('typographic-spectrum.mp4')
-    expect(createExportFilename('...')).toBe('typographic-spectrum.mp4')
+    expect(createExportFilename(null)).toBe('typo.mp4')
+    expect(createExportFilename('...')).toBe('typo.mp4')
   })
 })
 

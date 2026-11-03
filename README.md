@@ -1,6 +1,6 @@
-# Typographic Spectrum
+# typo
 
-A client-only, audio-reactive typographic canvas. Frequency maps to columns across the x axis and amplitude moves each column's character vertically, so the spectrum reads as a crest of letters and symbols rather than bars or lines.
+typo is a client-only, audio-reactive typographic canvas. Frequency maps to columns across the x axis and amplitude moves each column's character vertically, so the spectrum reads as a crest of letters and symbols rather than bars or lines.
 
 Nothing is uploaded. Audio is decoded and played locally through the Web Audio API, and the artwork is drawn with Canvas 2D.
 

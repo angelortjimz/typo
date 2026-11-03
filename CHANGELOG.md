@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Typographic Spectrum are documented in this file.
+All notable changes to typo are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Initial client-only Typographic Spectrum application built with React, TypeScript, Vite, Web Audio API, and Canvas 2D.
+- Initial client-only typo application built with React, TypeScript, Vite, Web Audio API, and Canvas 2D.
 - Local audio selection, drag-and-drop upload, decoding, playback, pause/resume, completion/restart, replacement, and readable decode/playback errors.
 - Seeking, elapsed time, track duration, and volume controls.
 - Typographic spectral crest with logarithmic frequency mapping, vertical amplitude envelopes, and deterministic seeded character shuffling.
@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Renamed the application from Typographic Spectrum to typo across the page title, package name, README, export filenames, and console prefixes. The composition header is now a large “typo” wordmark; hovering anywhere across the header band sweeps a single uppercase letter through the word via animated `text-transform`; the old tagline was removed.
 - Audio loading now rejects empty and non-audio files before decoding, and reports distinct messages for unsupported files, empty audio, decode failures, unavailable Web Audio, and playback blocked by the browser.
 - Decoding no longer depends on the autoplay gesture; the audio context resumes when playback starts, with a bounded wait so blocked autoplay reports an error instead of appearing to hang.
 - Sliders expose their formatted value as `aria-valuetext` so units are announced by assistive technology.

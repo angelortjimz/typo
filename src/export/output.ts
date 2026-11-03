@@ -94,7 +94,7 @@ export function createExportFilename(trackName: string | null): string {
     .replace(/[. ]+$/, '')
   const safeBase = Array.from(trackBase).slice(0, 80).join('')
 
-  return safeBase ? `${safeBase}-typographic-spectrum.mp4` : 'typographic-spectrum.mp4'
+  return safeBase ? `${safeBase}-typo.mp4` : 'typo.mp4'
 }
 
 export function hasMp4FileHeader(buffer: ArrayBuffer): boolean {

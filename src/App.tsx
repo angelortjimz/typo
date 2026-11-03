@@ -13,6 +13,7 @@ import { generateVisualConfig } from './visual/generator'
 import { randomSeed } from './visual/random'
 
 const EXPORTABLE_AUDIO_STATUSES = ['ready', 'playing', 'paused', 'ended'] as const
+const APP_NAME_LETTERS = ['t', 'y', 'p', 'o'] as const
 
 function isFileDrag(event: DragEvent<HTMLElement>): boolean {
   return Array.from(event.dataTransfer.types).includes('Files')
@@ -170,8 +171,13 @@ export default function App() {
 
       <div className="composition-panel">
         <header className="app-header">
-          <h1>Typographic Spectrum</h1>
-          <p>Audio, rendered as type.</p>
+          <h1 className="app-name" aria-label="typo">
+            {APP_NAME_LETTERS.map((letter) => (
+              <span className="app-name__letter" key={letter} aria-hidden="true">
+                {letter}
+              </span>
+            ))}
+          </h1>
         </header>
 
         <VisualControls

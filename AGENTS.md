@@ -1,6 +1,6 @@
 # Project Purpose
 
-This is a client-only, audio-reactive typographic spectrum. The artwork consists of letters and symbols on a plain background: x represents frequency, y represents amplitude, and characters form a spectral crest rather than conventional bars or lines. Prioritize one polished visual mode and a strong default composition over feature count.
+typo is a client-only, audio-reactive typographic spectrum. The artwork consists of letters and symbols on a plain background: x represents frequency, y represents amplitude, and characters form a spectral crest rather than conventional bars or lines. Prioritize one polished visual mode and a strong default composition over feature count.
 
 Read `docs/roadmap.md` before changing scope. Implement only the current milestone unless the user requests otherwise.
 

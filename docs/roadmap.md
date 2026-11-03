@@ -1,4 +1,4 @@
-# Web Audio Spectrum Analyzer
+# typo — Web Audio Spectrum Analyzer
 
 ## Implementation Roadmap
 
@@ -8,7 +8,7 @@
 
 ## 1. Product Direction
 
-The application is a client-only web experience built around one highly polished visual mode: **Typographic Spectrum**.
+typo is a client-only web experience built around one highly polished visual mode: **Typographic Spectrum**.
 
 A dedicated white canvas area contains a typographic spectral crest. The x axis represents frequency and the y axis represents amplitude, with one character drawn at each frequency column’s crest. Character selection is independent of amplitude and shuffles at a configurable speed, prioritizing an expressive display without sacrificing the recognizable spectrum shape.
 

@@ -274,7 +274,7 @@ export class TrackExporter {
           ? error
           : new ExportStartError(stage, 'The export could not start.', error)
       console.error(
-        `[Typographic Spectrum] MP4 export failed during ${failure.stage} startup.`,
+        `[typo] MP4 export failed during ${failure.stage} startup.`,
         failure.details ?? error,
       )
 
@@ -344,7 +344,7 @@ export class TrackExporter {
     }
     recorder.onerror = (event) => {
       const error = getRecorderEventError(event)
-      console.error('[Typographic Spectrum] MediaRecorder stopped with an error.', error)
+      console.error('[typo] MediaRecorder stopped with an error.', error)
       this.failSession(
         session,
         `The browser stopped MP4 recording (${getErrorName(error)}). No file was kept.`,
@@ -410,7 +410,7 @@ export class TrackExporter {
       this.finishTrack(session)
     } else if (status === 'error') {
       console.error(
-        '[Typographic Spectrum] Audio playback failed during MP4 export.',
+        '[typo] Audio playback failed during MP4 export.',
         this.engine.getSnapshot().error,
       )
       this.failSession(
@@ -453,7 +453,7 @@ export class TrackExporter {
 
     const recorder = session.recorder
     if (!recorder || recorder.state === 'inactive') {
-      console.error('[Typographic Spectrum] MP4 recorder was not active when the track ended.')
+      console.error('[typo] MP4 recorder was not active when the track ended.')
       this.failSession(session, GENERIC_ERROR)
       return
     }
@@ -461,7 +461,7 @@ export class TrackExporter {
     try {
       recorder.stop()
     } catch (error) {
-      console.error('[Typographic Spectrum] MP4 recorder could not be stopped.', error)
+      console.error('[typo] MP4 recorder could not be stopped.', error)
       this.failSession(session, GENERIC_ERROR)
     }
   }
@@ -472,7 +472,7 @@ export class TrackExporter {
     }
 
     if (!session.endRequested) {
-      console.error('[Typographic Spectrum] MP4 recorder stopped before the track ended.')
+      console.error('[typo] MP4 recorder stopped before the track ended.')
       this.failSession(session, 'The export stopped before the track finished. No file was kept.')
       return
     }
@@ -509,7 +509,7 @@ export class TrackExporter {
         fileName,
       })
     } catch (error) {
-      console.error('[Typographic Spectrum] MP4 finalization failed.', error)
+      console.error('[typo] MP4 finalization failed.', error)
       if (!this.isActive(session)) {
         return
       }
