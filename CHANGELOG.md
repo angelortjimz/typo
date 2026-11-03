@@ -25,9 +25,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MP4 capability detection with clear unsupported-browser messaging instead of producing an invalid file.
 - Export progress, expected real-time duration, tab-visibility guidance, and cancellation with partial-file discard.
 - Unit-test coverage for spectrum processing, envelopes, crest layout, deterministic shuffling, font/color assignments, configuration sanitization, generation, playback-time formatting, export sizing, MP4 validation, and MP4 capability selection.
+- Root `README.md` covering Node and pnpm setup, development, testing, production-build commands, browser support, audio and export limitations, privacy, and accessibility.
+- `pnpm preview` script for serving the production build locally.
+- Local SVG favicon so the production page loads without a missing-resource console error.
+- Unit tests for audio upload validation, including empty files, missing MIME types, and unsupported file types.
 
 ### Changed
 
+- Audio loading now rejects empty and non-audio files before decoding, and reports distinct messages for unsupported files, empty audio, decode failures, unavailable Web Audio, and playback blocked by the browser.
+- Decoding no longer depends on the autoplay gesture; the audio context resumes when playback starts, with a bounded wait so blocked autoplay reports an error instead of appearing to hang.
+- Sliders expose their formatted value as `aria-valuetext` so units are announced by assistive technology.
+- `prefers-reduced-motion: reduce` removes the transport transition while leaving the audio-reactive artwork intact.
 - Raised the font-size control's upper bound from 36px to 96px and widened Generate's font-size range while keeping generated compositions readable.
 - Raised the enabled-font limit from four to eight so every bundled family can be combined in one composition.
 - Random weight and italic styling stays upright for families without an italic face.
@@ -42,6 +50,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Restored the keyboard focus ring on the character-pool input by removing its `outline: none` override.
+- Gave each palette remove button a unique accessible name.
 - Hardened MP4 export startup by retaining the export click's user activation, trying all advertised H.264/AAC recorder configurations, removing the optional recording timeslice, and reporting the failing startup stage instead of one generic error.
 - Corrected end-of-track offsets and seeking behavior when replaying or seeking near completion.
 - Ignored stale decode and playback callbacks when tracks or playback generations change.

@@ -34,6 +34,7 @@ export function SliderControl({
         max={max}
         step={step}
         value={value}
+        aria-valuetext={displayValue}
         onChange={(event) => onChange(Number(event.currentTarget.value))}
       />
     </div>

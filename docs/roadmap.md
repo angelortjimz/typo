@@ -258,12 +258,12 @@ Audio file
 - [x] Unit-test envelope, attack/decay, and glyph-selection utilities.
 - [x] Test stable seeded font, color, and column assignments.
 - [x] Test configuration sanitization and deterministic full-composition generation.
-- [ ] Verify upload errors, audio-context restrictions, and unsupported files.
-- [ ] Check keyboard access and visible focus states for controls.
-- [ ] Respect reduced-motion preferences where practical without disabling the core artwork unexpectedly.
-- [ ] Document pnpm setup, development, testing, and production-build commands.
-- [ ] Document browser and export limitations honestly.
-- [ ] Run final production-build and browser smoke tests.
+- [x] Verify upload errors, audio-context restrictions, and unsupported files.
+- [x] Check keyboard access and visible focus states for controls.
+- [x] Respect reduced-motion preferences where practical without disabling the core artwork unexpectedly.
+- [x] Document pnpm setup, development, testing, and production-build commands.
+- [x] Document browser and export limitations honestly.
+- [x] Run final production-build and browser smoke tests.
 
 **Release criteria**
 

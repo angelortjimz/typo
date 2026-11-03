@@ -450,7 +450,6 @@ select:focus-visible,
 
 .glyph-control input:focus {
   border-bottom-color: var(--ink);
-  outline: none;
 }
 
 .control-hint {
@@ -717,6 +716,12 @@ input[type='color'] {
 
   .track-name {
     max-width: 140px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .transport {
+    transition: none;
   }
 }
 

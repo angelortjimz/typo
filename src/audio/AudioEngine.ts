@@ -1,5 +1,6 @@
 import { VISUAL_CONSTANTS } from '../visual/config'
 import { clampPlaybackTime, clampVolume } from './playback'
+import { describeAudioFileIssue } from './validation'
 
 export type PlaybackStatus = 'idle' | 'loading' | 'ready' | 'playing' | 'paused' | 'ended' | 'error'
 
@@ -20,6 +21,31 @@ const INITIAL_SNAPSHOT: AudioSnapshot = {
   trackName: null,
   duration: 0,
   error: null,
+}
+
+const DECODE_ERROR =
+  'This file could not be decoded. Try an MP3, WAV, or another supported audio file.'
+const EMPTY_AUDIO_ERROR = 'This file contains no playable audio. Try another track.'
+const AUDIO_CONTEXT_ERROR =
+  'Web Audio is unavailable in this browser. Try a browser with audio support, such as Chromium.'
+const PLAYBACK_BLOCKED_ERROR =
+  'The browser blocked playback. Press Play again, and check that this site is allowed to play audio.'
+const RESUME_TIMEOUT_MS = 1_500
+
+function resumeAudioContext(context: AudioContext): Promise<boolean> {
+  if (context.state !== 'suspended') {
+    return Promise.resolve(true)
+  }
+
+  return Promise.race([
+    context.resume().then(
+      () => true,
+      () => false,
+    ),
+    new Promise<boolean>((resolve) => {
+      globalThis.setTimeout(() => resolve(false), RESUME_TIMEOUT_MS)
+    }),
+  ]).then((resumed) => resumed && context.state !== 'suspended')
 }
 
 export class AudioEngine {
@@ -49,6 +75,18 @@ export class AudioEngine {
     this.stopSource()
     this.buffer = null
     this.offset = 0
+
+    const fileIssue = describeAudioFileIssue(file)
+    if (fileIssue) {
+      this.updateSnapshot({
+        status: 'error',
+        trackName: file.name,
+        duration: 0,
+        error: fileIssue.message,
+      })
+      return
+    }
+
     this.updateSnapshot({
       status: 'loading',
       trackName: file.name,
@@ -56,15 +94,40 @@ export class AudioEngine {
       error: null,
     })
 
+    let context: AudioContext
     try {
-      const { context } = this.ensureAudioGraph()
-      if (context.state === 'suspended') {
-        await context.resume()
+      // Decoding works while the context is suspended, so loading never depends
+      // on the browser granting audio playback from a gesture.
+      context = this.ensureAudioGraph().context
+    } catch {
+      if (generation !== this.loadGeneration) {
+        return
       }
 
+      this.updateSnapshot({
+        status: 'error',
+        trackName: file.name,
+        duration: 0,
+        error: AUDIO_CONTEXT_ERROR,
+      })
+      return
+    }
+
+    try {
       const data = await file.arrayBuffer()
       const buffer = await context.decodeAudioData(data)
       if (generation !== this.loadGeneration) {
+        return
+      }
+
+      if (!(buffer.duration > 0)) {
+        this.buffer = null
+        this.updateSnapshot({
+          status: 'error',
+          trackName: file.name,
+          duration: 0,
+          error: EMPTY_AUDIO_ERROR,
+        })
         return
       }
 
@@ -86,7 +149,7 @@ export class AudioEngine {
         status: 'error',
         trackName: file.name,
         duration: 0,
-        error: 'This file could not be decoded. Try an MP3, WAV, or another supported audio file.',
+        error: DECODE_ERROR,
       })
     }
   }
@@ -102,9 +165,14 @@ export class AudioEngine {
 
     try {
       const { context, analyser } = this.ensureAudioGraph()
-      if (context.state === 'suspended') {
-        await context.resume()
+      const resumed = await resumeAudioContext(context)
+      if (!resumed) {
+        if (playbackGeneration === this.playbackGeneration) {
+          this.updateSnapshot({ ...this.snapshot, error: PLAYBACK_BLOCKED_ERROR })
+        }
+        return
       }
+
       if (
         playbackGeneration !== this.playbackGeneration ||
         loadGeneration !== this.loadGeneration ||

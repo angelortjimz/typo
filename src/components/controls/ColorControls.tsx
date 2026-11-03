@@ -70,6 +70,7 @@ export function ColorControls({ config, onChange }: ColorControlsProps) {
                 type="button"
                 className="text-button compact"
                 disabled={config.colors.length === 1}
+                aria-label={`Remove palette color ${index + 1}`}
                 onClick={() => removeColor(index)}
               >
                 Remove
