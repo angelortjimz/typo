@@ -37,7 +37,8 @@ Open the local URL printed by Vite. Choose an audio file or drop one anywhere on
 1. Choose or drop a local audio file.
 2. Press Play. The canvas stays blank until the track produces audible energy.
 3. Tune the composition in the side panel. Controls stay visible; Generate randomizes the visual configuration and Reset restores the defaults.
-4. In Chromium, export the full track to MP4 with the original audio.
+4. The Tempo section shows the detected BPM and its confidence. Switch to Manual to enter your own BPM.
+5. In Chromium, export the full track to MP4 with the original audio.
 
 ## Browser support
 
@@ -61,6 +62,7 @@ When those are unavailable, the app keeps playback working and explains that exp
 - Export renders at canvas size, 720p, or 1080p. A canvas smaller than the chosen resolution is upscaled.
 - The exported file contains the original track audio. It does not capture microphone input.
 - Visual configuration is session-local. There are no presets, saved profiles, or `localStorage` settings.
+- Tempo detection is an estimate from a bounded analysis window. It can be wrong on ambient, sparse, or tempo-changing music; switch to Manual to enter the correct BPM.
 
 ## Privacy
 
@@ -84,4 +86,4 @@ docs/           Roadmap and implementation/verification notes
 
 ## Verification
 
-`pnpm test` covers the pure spectrum, envelope, layout, deterministic shuffle, style assignment, generation, playback, and export helpers. Browser behavior is verified with the smoke matrix in [`docs/milestone-5-implementation.md`](docs/milestone-5-implementation.md). See [`docs/roadmap.md`](docs/roadmap.md) for scope and milestone status.
+`pnpm test` covers the pure spectrum, envelope, layout, deterministic shuffle, style assignment, generation, playback, tempo analysis, and export helpers. Browser behavior is verified with the smoke matrix in [`docs/milestone-5-implementation.md`](docs/milestone-5-implementation.md). See [`docs/roadmap.md`](docs/roadmap.md) for scope and milestone status.

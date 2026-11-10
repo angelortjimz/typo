@@ -667,6 +667,57 @@ input[type='color'] {
   cursor: pointer;
 }
 
+.tempo-readout {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.tempo-value {
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tempo-source {
+  color: var(--muted);
+  font-size: 9px;
+  text-align: right;
+}
+
+.tempo-manual {
+  margin-bottom: 20px;
+}
+
+.tempo-manual label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: 0.025em;
+}
+
+.tempo-manual input {
+  width: 100%;
+  padding: 7px 0;
+  border: 0;
+  border-bottom: 1px solid #dedede;
+  border-radius: 0;
+  color: var(--ink);
+  background: transparent;
+  font-size: 12px;
+}
+
+.tempo-manual input:focus {
+  border-bottom-color: var(--ink);
+}
+
+.tempo-manual input:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
 @media (max-width: 840px) {
   html,
   body,

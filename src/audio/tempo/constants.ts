@@ -1,0 +1,15 @@
+export const TEMPO_CONSTANTS = {
+  targetAnalysisRate: 22_050,
+  windowSize: 1_024,
+  hopSize: 256,
+  minBpm: 60,
+  maxBpm: 200,
+  bpmStep: 0.5,
+  maxAnalysisSeconds: 45,
+  defaultBpm: 120,
+  manualBpmMin: 40,
+  manualBpmMax: 240,
+  preferredMinBpm: 90,
+  preferredMaxBpm: 160,
+  octaveScoreTolerance: 0.85,
+} as const

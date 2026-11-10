@@ -1,4 +1,5 @@
 import { VISUAL_CONSTANTS } from '../visual/config'
+import { analyzeAudioBuffer, type TempoResult } from './tempo'
 import { clampPlaybackTime, clampVolume } from './playback'
 import { describeAudioFileIssue } from './validation'
 
@@ -9,6 +10,7 @@ export interface AudioSnapshot {
   trackName: string | null
   duration: number
   error: string | null
+  tempo: TempoResult | null
 }
 
 export interface AudioRecordingTap {
@@ -21,6 +23,7 @@ const INITIAL_SNAPSHOT: AudioSnapshot = {
   trackName: null,
   duration: 0,
   error: null,
+  tempo: null,
 }
 
 const DECODE_ERROR =
@@ -55,6 +58,7 @@ export class AudioEngine {
   private recordingDestination: MediaStreamAudioDestinationNode | null = null
   private buffer: AudioBuffer | null = null
   private source: AudioBufferSourceNode | null = null
+  private tempoResult: TempoResult | null = null
   private snapshot: AudioSnapshot = INITIAL_SNAPSHOT
   private readonly listeners = new Set<() => void>()
   private loadGeneration = 0
@@ -74,6 +78,7 @@ export class AudioEngine {
     const generation = ++this.loadGeneration
     this.stopSource()
     this.buffer = null
+    this.tempoResult = null
     this.offset = 0
 
     const fileIssue = describeAudioFileIssue(file)
@@ -133,6 +138,7 @@ export class AudioEngine {
 
       this.buffer = buffer
       this.offset = 0
+      this.tempoResult = analyzeAudioBuffer(buffer)
       this.updateSnapshot({
         status: 'ready',
         trackName: file.name,
@@ -352,6 +358,7 @@ export class AudioEngine {
     this.stopSource()
     this.disposeRecordingTap()
     this.buffer = null
+    this.tempoResult = null
     this.offset = 0
     this.analyser?.disconnect()
     this.volumeNode?.disconnect()
@@ -442,8 +449,8 @@ export class AudioEngine {
     source.disconnect()
   }
 
-  private updateSnapshot(snapshot: AudioSnapshot): void {
-    this.snapshot = snapshot
+  private updateSnapshot(snapshot: Omit<AudioSnapshot, 'tempo'>): void {
+    this.snapshot = { ...snapshot, tempo: this.tempoResult }
     for (const listener of this.listeners) {
       listener()
     }

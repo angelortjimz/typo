@@ -1,5 +1,6 @@
 import { useRef, useState, type DragEvent } from 'react'
 import { useAudioEngine } from './audio/useAudioEngine'
+import { useTempo } from './audio/useTempo'
 import { AudioUpload } from './components/AudioUpload'
 import { ExportControls } from './components/ExportControls'
 import { PlaybackControls } from './components/PlaybackControls'
@@ -21,6 +22,7 @@ function isFileDrag(event: DragEvent<HTMLElement>): boolean {
 
 export default function App() {
   const { engine, snapshot } = useAudioEngine()
+  const { tempo, setMode, setManualBpm } = useTempo(snapshot)
   const { exporter, snapshot: exportSnapshot } = useTrackExporter(engine)
   const [config, setConfig] = useState<VisualConfig>(() =>
     sanitizeVisualConfig(DEFAULT_VISUAL_CONFIG),
@@ -182,9 +184,12 @@ export default function App() {
 
         <VisualControls
           config={config}
+          tempo={tempo}
           onChange={updateConfig}
           onGenerate={generate}
           onReset={reset}
+          onTempoModeChange={setMode}
+          onManualBpmChange={setManualBpm}
         />
       </div>
     </main>

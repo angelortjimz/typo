@@ -49,6 +49,7 @@ A dedicated white canvas area contains a typographic spectral crest. The x axis 
 | Initial browser target | Simple Chromium-first desktop experience |
 | Initial visual modes | One polished Typographic Spectrum mode |
 | Video export | Full-track MP4 with the original audio included |
+| Tempo | Offline analysis of the decoded track with a manual BPM override |
 
 ### Core modules
 
@@ -57,6 +58,7 @@ A dedicated white canvas area contains a typographic spectral crest. The x axis 
 3. **Typographic renderer** — Crest-column layout, deterministic character shuffling, amplitude-to-y mapping, and drawing.
 4. **Exporter** — Canvas video capture synchronized with the original track.
 5. **React interface** — Upload, transport controls, persistent customization controls, and a fixed workspace layout.
+6. **Tempo analyzer** — Offline BPM detection, confidence, beat offset, and manual override.
 
 ```text
 Audio file
@@ -66,6 +68,10 @@ Audio file
     → Typographic renderer
     → Canvas
     → Optional MP4 export
+
+Decoded buffer
+    → Tempo analysis
+    → Beat phase (future modulation)
 ```
 
 ---
@@ -79,6 +85,8 @@ Audio file
 | 3. Player and presentation polish | Complete player, fixed workspace layout, responsiveness, and performance | High |
 | 4. Full-track MP4 export | Shareable video containing the original audio | Medium |
 | 5. Release hardening | Browser validation, tests, accessibility, and documentation | Medium |
+| 6. Tempo detection and manual input | Detect the loaded track's tempo and allow a manual override | Medium |
+| 7. Beat-synced modulation | LFO and chaos modulation locked to the effective tempo | Low |
 
 ---
 
@@ -275,6 +283,53 @@ Audio file
 
 ---
 
+### Milestone 6 — Tempo Detection and Manual Input
+
+**Goal:** Detect the tempo of the loaded track, surface a confidence estimate, and let the user override it manually before any beat-synced modulation exists.
+
+#### Offline tempo analysis
+
+- [x] Analyze the decoded `AudioBuffer` once after load, without blocking playback or the render loop.
+- [x] Compute a spectral-flux onset detection function.
+- [x] Estimate BPM within a musical range, resolve octave errors, and report confidence.
+- [x] Estimate beat offset for future beat-synced modulation.
+- [x] Bound analysis to a representative window so load stays responsive.
+
+#### Manual tempo and interface
+
+- [x] Add an Auto/Manual tempo mode.
+- [x] Provide a clamped manual BPM input.
+- [x] Show detected BPM, source, confidence, and analysis state.
+- [x] Keep tempo session-local and independent of Generate/Reset.
+
+**Exit criteria**
+
+- Known-tempo tracks produce close BPM estimates with sensible confidence.
+- Uncertain or rhythmically sparse tracks report low confidence instead of false precision.
+- Manual override always wins and is immediately reflected in the readout.
+- Analysis does not interrupt playback, export, or rendering.
+
+---
+
+### Milestone 7 — Beat-Synced Modulation
+
+**Goal:** Use the detected or manual tempo to drive expressive modulation.
+
+#### Beat-synced modulation
+
+- [ ] Add a beat clock that maps playback position and tempo to a beat phase.
+- [ ] Modulate character shuffle timing with a beat-synced chaos LFO.
+- [ ] Keep amplitude controls exclusive to vertical crest position.
+- [ ] Preserve deterministic, seed-based visuals when modulation is disabled.
+
+**Exit criteria**
+
+- LFOs lock to the effective tempo and beat offset.
+- Zero Chaos still freezes characters.
+- Manual BPM changes immediately affect modulation.
+
+---
+
 ## 5. Deliberately Out of Scope for the First Release
 
 - Multiple half-polished visualization modes
@@ -293,6 +348,6 @@ These can be reconsidered after the core typographic experience is excellent.
 
 ## 6. Recommended Execution Order
 
-> **Aesthetic validation → typography controls → player polish → export → hardening**
+> **Aesthetic validation → typography controls → player polish → export → hardening → tempo detection → beat-synced modulation**
 
 Do not begin with MP4 infrastructure or a large component system. The project's differentiator is the quality of its reactive typography; the first milestone should prove that value as quickly as possible.

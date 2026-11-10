@@ -1,15 +1,20 @@
 import type { ReactNode } from 'react'
+import type { TempoMode, TempoState } from '../audio/useTempo'
 import type { VisualConfig } from '../visual/config'
 import { CharacterControls } from './controls/CharacterControls'
 import { ColorControls } from './controls/ColorControls'
 import { FontControls } from './controls/FontControls'
 import { ResponseControls } from './controls/ResponseControls'
+import { TempoControls } from './controls/TempoControls'
 
 interface VisualControlsProps {
   config: VisualConfig
+  tempo: TempoState
   onChange: (patch: Partial<VisualConfig>) => void
   onGenerate: () => void
   onReset: () => void
+  onTempoModeChange: (mode: TempoMode) => void
+  onManualBpmChange: (value: number) => void
 }
 
 function ControlSection({ title, children }: { title: string; children: ReactNode }) {
@@ -21,7 +26,15 @@ function ControlSection({ title, children }: { title: string; children: ReactNod
   )
 }
 
-export function VisualControls({ config, onChange, onGenerate, onReset }: VisualControlsProps) {
+export function VisualControls({
+  config,
+  tempo,
+  onChange,
+  onGenerate,
+  onReset,
+  onTempoModeChange,
+  onManualBpmChange,
+}: VisualControlsProps) {
   return (
     <aside className="visual-controls" aria-labelledby="composition-heading">
       <h2 id="composition-heading">Composition</h2>
@@ -40,6 +53,14 @@ export function VisualControls({ config, onChange, onGenerate, onReset }: Visual
 
       <ControlSection title="Response">
         <ResponseControls config={config} onChange={onChange} />
+      </ControlSection>
+
+      <ControlSection title="Tempo">
+        <TempoControls
+          tempo={tempo}
+          onModeChange={onTempoModeChange}
+          onManualBpmChange={onManualBpmChange}
+        />
       </ControlSection>
 
       <div className="generation-actions">

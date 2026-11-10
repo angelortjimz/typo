@@ -29,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `pnpm preview` script for serving the production build locally.
 - Local SVG favicon so the production page loads without a missing-resource console error.
 - Unit tests for audio upload validation, including empty files, missing MIME types, and unsupported file types.
+- Offline tempo detection from the decoded track, reporting BPM, confidence, and beat offset.
+- Auto/Manual tempo mode with a clamped manual BPM input and a live tempo readout in the composition panel.
+- Unit tests for the FFT, onset detection, tempo estimation, beat phase, and buffer analysis pipeline.
 
 ### Changed
 
