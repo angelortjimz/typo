@@ -2,11 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { estimateTempo } from './estimate'
 import type { OnsetFunction } from './types'
 
-function periodicOnset(
-  frameRate: number,
-  bpm: number,
-  durationSeconds: number,
-): OnsetFunction {
+function periodicOnset(frameRate: number, bpm: number, durationSeconds: number): OnsetFunction {
   const length = Math.floor(durationSeconds * frameRate)
   const values = new Float32Array(length)
   const periodFrames = (frameRate * 60) / bpm
@@ -36,11 +32,28 @@ describe('estimateTempo', () => {
     expect(result?.confidence).toBeGreaterThan(0.5)
   })
 
-  it('keeps a slow 60 BPM pulse train instead of doubling it', () => {
+  it('corrects a half-time 60 BPM lock to 120 BPM', () => {
     const result = estimateTempo(periodicOnset(86.13, 60, 12))
 
-    expect(result?.bpm).toBeGreaterThanOrEqual(58)
-    expect(result?.bpm).toBeLessThanOrEqual(62)
+    expect(result?.bpm).toBeGreaterThanOrEqual(118)
+    expect(result?.bpm).toBeLessThanOrEqual(122)
+  })
+
+  it.each([62, 75])('doubles a %i BPM lock into the preferred range', (bpm) => {
+    const result = estimateTempo(periodicOnset(86.13, bpm, 12))
+
+    expect(result?.bpm).toBeGreaterThanOrEqual(bpm * 2 - 2)
+    expect(result?.bpm).toBeLessThanOrEqual(bpm * 2 + 2)
+  })
+
+  it('aligns the beat offset with the corrected tempo', () => {
+    const frameRate = 86.13
+    const result = estimateTempo(periodicOnset(frameRate, 64, 12))
+
+    expect(result?.bpm).toBeGreaterThanOrEqual(126)
+    expect(result?.bpm).toBeLessThanOrEqual(130)
+    expect(result?.offset).toBeGreaterThanOrEqual(0)
+    expect(result?.offset).toBeLessThan(60 / 128)
   })
 
   it('returns null for a flat onset function', () => {

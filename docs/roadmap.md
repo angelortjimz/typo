@@ -285,7 +285,7 @@ Decoded buffer
 
 ### Milestone 6 — Tempo Detection and Manual Input
 
-**Goal:** Detect the tempo of the loaded track, surface a confidence estimate, and let the user override it manually before any beat-synced modulation exists.
+**Goal:** Detect the tempo of the loaded track, flag uncertain estimates, and let the user override it manually before any beat-synced modulation exists.
 
 #### Offline tempo analysis
 
@@ -299,13 +299,16 @@ Decoded buffer
 
 - [x] Add an Auto/Manual tempo mode.
 - [x] Provide a clamped manual BPM input.
-- [x] Show detected BPM, source, confidence, and analysis state.
+- [x] Add octave correction buttons (×2 / ÷2) next to the tempo readout.
+- [x] Show detected BPM and analysis state.
+- [x] Mark low-confidence estimates with ≈ instead of labeling every result.
 - [x] Keep tempo session-local and independent of Generate/Reset.
 
 **Exit criteria**
 
 - Known-tempo tracks produce close BPM estimates with sensible confidence.
-- Uncertain or rhythmically sparse tracks report low confidence instead of false precision.
+- Half-time locks report the doubled tempo; genuinely slow tracks can be halved with ÷2.
+- Uncertain or rhythmically sparse tracks are marked as approximate instead of implying false precision.
 - Manual override always wins and is immediately reflected in the readout.
 - Analysis does not interrupt playback, export, or rendering.
 

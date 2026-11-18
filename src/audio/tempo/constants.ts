@@ -12,4 +12,5 @@ export const TEMPO_CONSTANTS = {
   preferredMinBpm: 90,
   preferredMaxBpm: 160,
   octaveScoreTolerance: 0.85,
+  lowConfidenceThreshold: 0.33,
 } as const

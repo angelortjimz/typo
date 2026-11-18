@@ -1,5 +1,5 @@
 import { useId } from 'react'
-import { TEMPO_CONSTANTS } from '../../audio/tempo'
+import { canScaleBpm, isLowConfidence, scaleBpm, TEMPO_CONSTANTS } from '../../audio/tempo'
 import type { TempoMode, TempoState } from '../../audio/useTempo'
 import { OptionButtons } from './OptionButtons'
 
@@ -9,47 +9,71 @@ interface TempoControlsProps {
   onManualBpmChange: (value: number) => void
 }
 
-function confidenceLabel(confidence: number): string {
-  if (confidence >= 0.66) {
-    return 'High confidence'
-  }
-  if (confidence >= 0.33) {
-    return 'Medium confidence'
-  }
-  return 'Low confidence'
+interface TempoReadout {
+  value: string
+  approximate: boolean
 }
 
-function readoutFor(tempo: TempoState): { value: string; detail: string } {
+function readoutFor(tempo: TempoState): TempoReadout {
   if (tempo.isAnalyzing) {
-    return { value: '…', detail: 'Analyzing tempo' }
+    return { value: '…', approximate: false }
   }
-  if (!tempo.isReady) {
-    return { value: '—', detail: 'No track loaded' }
+  if (!tempo.isReady || tempo.source === 'default') {
+    return { value: '—', approximate: false }
   }
 
-  const bpm = `${Math.round(tempo.effectiveBpm)} BPM`
-  if (tempo.source === 'detected' && tempo.confidence !== null) {
-    return { value: bpm, detail: `Detected · ${confidenceLabel(tempo.confidence)}` }
+  return {
+    value: `${Math.round(tempo.effectiveBpm)} BPM`,
+    approximate: tempo.source === 'detected' && isLowConfidence(tempo.confidence),
   }
-  if (tempo.source === 'manual') {
-    return { value: bpm, detail: 'Manual' }
-  }
-  return { value: bpm, detail: 'Default · no tempo detected' }
 }
 
-export function TempoControls({
-  tempo,
-  onModeChange,
-  onManualBpmChange,
-}: TempoControlsProps) {
+export function TempoControls({ tempo, onModeChange, onManualBpmChange }: TempoControlsProps) {
   const inputId = useId()
   const readout = readoutFor(tempo)
+  const hasTempo = tempo.isReady && tempo.source !== 'default'
+  const canHalve = hasTempo && canScaleBpm(tempo.effectiveBpm, 0.5)
+  const canDouble = hasTempo && canScaleBpm(tempo.effectiveBpm, 2)
+
+  const handleScale = (factor: number) => {
+    onModeChange('manual')
+    onManualBpmChange(scaleBpm(tempo.effectiveBpm, factor))
+  }
 
   return (
     <div>
-      <div className="tempo-readout" aria-live="polite">
-        <span className="tempo-value">{readout.value}</span>
-        <span className="tempo-source">{readout.detail}</span>
+      <div className="tempo-readout">
+        <span className="tempo-value-group">
+          <button
+            type="button"
+            className="tempo-scale-button"
+            aria-label="Halve tempo"
+            disabled={!canHalve}
+            onClick={() => handleScale(0.5)}
+          >
+            ÷2
+          </button>
+          <span className="tempo-value" aria-live="polite">
+            {readout.approximate && (
+              <span className="tempo-approx" aria-hidden="true">
+                ≈
+              </span>
+            )}
+            {readout.value}
+            {readout.approximate && (
+              <span className="visually-hidden"> approximate, low confidence</span>
+            )}
+          </span>
+          <button
+            type="button"
+            className="tempo-scale-button"
+            aria-label="Double tempo"
+            disabled={!canDouble}
+            onClick={() => handleScale(2)}
+          >
+            ×2
+          </button>
+        </span>
       </div>
 
       <OptionButtons
@@ -71,7 +95,7 @@ export function TempoControls({
           max={TEMPO_CONSTANTS.manualBpmMax}
           step={1}
           value={tempo.manualBpm}
-          disabled={tempo.mode !== 'manual'}
+          disabled={tempo.mode !== 'manual' || !tempo.isReady}
           onChange={(event) => {
             const value = event.currentTarget.valueAsNumber
             if (Number.isFinite(value)) {
@@ -82,7 +106,8 @@ export function TempoControls({
       </div>
 
       <p className="control-hint">
-        Tempo is estimated from the loaded track. Switch to Manual to enter your own BPM.
+        Tempo is estimated from the loaded track; uncertain estimates are marked ≈. Switch to Manual
+        to enter your own BPM.
       </p>
     </div>
   )

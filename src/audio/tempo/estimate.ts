@@ -98,28 +98,18 @@ export function estimateTempo(
   }
 
   let bestBpm = candidates[bestIndex]
-  const bestScore = scores[bestIndex]
 
   if (bestBpm < TEMPO_CONSTANTS.preferredMinBpm) {
-    const doubled = bestBpm * 2
-    const doubledIndex = candidates.findIndex(
-      (bpm) => Math.abs(bpm - doubled) < bpmStep / 2,
-    )
-    if (
-      doubledIndex >= 0 &&
-      scores[doubledIndex] >= bestScore * TEMPO_CONSTANTS.octaveScoreTolerance
-    ) {
-      bestBpm = candidates[doubledIndex]
-      bestIndex = doubledIndex
-    }
+    // A lock below the preferred range is almost always a half-time reading of
+    // a faster track. Double it before the phase search so the reported tempo
+    // and the beat offset describe the same period.
+    bestBpm *= 2
   } else if (bestBpm > TEMPO_CONSTANTS.preferredMaxBpm) {
     const halved = bestBpm / 2
-    const halvedIndex = candidates.findIndex(
-      (bpm) => Math.abs(bpm - halved) < bpmStep / 2,
-    )
+    const halvedIndex = candidates.findIndex((bpm) => Math.abs(bpm - halved) < bpmStep / 2)
     if (
       halvedIndex >= 0 &&
-      scores[halvedIndex] >= bestScore * TEMPO_CONSTANTS.octaveScoreTolerance
+      scores[halvedIndex] >= scores[bestIndex] * TEMPO_CONSTANTS.octaveScoreTolerance
     ) {
       bestBpm = candidates[halvedIndex]
       bestIndex = halvedIndex

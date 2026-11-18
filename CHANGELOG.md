@@ -31,7 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unit tests for audio upload validation, including empty files, missing MIME types, and unsupported file types.
 - Offline tempo detection from the decoded track, reporting BPM, confidence, and beat offset.
 - Auto/Manual tempo mode with a clamped manual BPM input and a live tempo readout in the composition panel.
-- Unit tests for the FFT, onset detection, tempo estimation, beat phase, and buffer analysis pipeline.
+- Unit tests for the FFT, onset detection, tempo estimation, octave scaling, low-confidence thresholding, beat phase, and buffer analysis pipeline.
+- Octave correction buttons (×2 / ÷2) next to the tempo readout for quick halving or doubling of the effective BPM.
 
 ### Changed
 
@@ -47,6 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced the full-viewport overlay layout with a fixed workspace that keeps all interface elements outside the artwork.
 - Playback time updates use a low-frequency timer instead of React state updates on every animation frame.
 - Export capture reuses the existing canvas frame loop and keeps its controls outside the captured artwork.
+- Simplified the tempo readout: the Auto/Manual toggle carries the source, and only low-confidence detections are marked with ≈ instead of labeling every result.
+- Tempo detection corrects half-time locks by doubling estimates below 90 BPM, so four-on-the-floor tracks report the tempo users expect; ÷2 remains available for genuinely slow music.
 
 ### Removed
 

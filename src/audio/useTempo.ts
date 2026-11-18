@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import type { AudioSnapshot } from './AudioEngine'
-import { TEMPO_CONSTANTS, type TempoResult } from './tempo'
+import { clampManualBpm, TEMPO_CONSTANTS, type TempoResult } from './tempo'
 
 export type TempoMode = 'auto' | 'manual'
 export type TempoSource = 'detected' | 'manual' | 'default'
@@ -17,14 +17,6 @@ export interface TempoState {
 }
 
 const READY_STATUSES = ['ready', 'playing', 'paused', 'ended'] as const
-
-function clampManualBpm(value: number): number {
-  const rounded = Number.isFinite(value) ? Math.round(value) : TEMPO_CONSTANTS.defaultBpm
-  return Math.min(
-    TEMPO_CONSTANTS.manualBpmMax,
-    Math.max(TEMPO_CONSTANTS.manualBpmMin, rounded),
-  )
-}
 
 function resolveEffective(
   mode: TempoMode,
