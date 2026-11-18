@@ -37,7 +37,7 @@ Open the local URL printed by Vite. Choose an audio file or drop one anywhere on
 1. Choose or drop a local audio file.
 2. Press Play. The canvas stays blank until the track produces audible energy.
 3. Tune the composition in the side panel. Controls stay visible; Generate randomizes the visual configuration and Reset restores the defaults.
-4. The Tempo section shows the effective BPM with ×2 / ÷2 octave correction buttons; a ≈ marks uncertain detections. Auto detection favors 90–200 BPM, so use ÷2 for genuinely slow tracks. Switch to Manual to enter your own BPM.
+4. The Tempo section shows the effective BPM with ×2 / ÷2 octave correction buttons; a ≈ marks uncertain detections. Auto detection favors 90–200 BPM, so use ÷2 for genuinely slow tracks, and manual BPM accepts 40–500. Switch to Manual to enter your own BPM.
 5. In Chromium, export the full track to MP4 with the original audio.
 
 ## Browser support

@@ -50,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Export capture reuses the existing canvas frame loop and keeps its controls outside the captured artwork.
 - Simplified the tempo readout: the Auto/Manual toggle carries the source, and only low-confidence detections are marked with ≈ instead of labeling every result.
 - Tempo detection corrects half-time locks by doubling estimates below 90 BPM, so four-on-the-floor tracks report the tempo users expect; ÷2 remains available for genuinely slow music.
+- Raised the manual tempo ceiling from 240 to 500 BPM so ×2 stays available well beyond typical track tempos; the manual BPM field accepts the same range.
 
 ### Removed
 

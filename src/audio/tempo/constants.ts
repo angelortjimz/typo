@@ -8,7 +8,7 @@ export const TEMPO_CONSTANTS = {
   maxAnalysisSeconds: 45,
   defaultBpm: 120,
   manualBpmMin: 40,
-  manualBpmMax: 240,
+  manualBpmMax: 500,
   preferredMinBpm: 90,
   preferredMaxBpm: 160,
   octaveScoreTolerance: 0.85,
